@@ -10,7 +10,7 @@ function fillSpiralMatrix($n)
 {
     $result = [];
 
-    $element = 1;
+    $element   = 1;
     $iteration = 1;
 
 
@@ -44,6 +44,11 @@ function fillSpiralMatrix($n)
         }
 
         $iteration++;
+    }
+
+    // hot fix for error in test-1 when not sorting array not accepted
+    foreach ($result as &$row) {
+        ksort($row);
     }
 
     return $result;
