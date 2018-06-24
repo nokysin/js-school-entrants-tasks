@@ -1,14 +1,22 @@
 <?php
 
+/**
+ * Class Emitter
+ */
 class Emitter
 {
+    /**
+     * @var array
+     */
+    protected $store = null;
+
     /**
      * Создает экземпляр класса Emitter.
      * @memberof Emitter
      */
     public function constructor()
     {
-        // Ваш код
+        $this->setStore([]);
     }
 
     /**
@@ -17,9 +25,9 @@ class Emitter
      * @param string event - событие
      * @param Handler handler - обработчик
      */
-    public function on($event, $handler)
+    public function on(string $event, $handler)
     {
-        // Ваш код
+        $this->setStoreByKey($event, $handler);
     }
 
     /**
@@ -28,9 +36,61 @@ class Emitter
      *
      * @param string event
      * @param mixed data
+     *
+     * @return void
      */
-    public function emit($event, $data)
+    public function emit(string $event, $data)
     {
-        // Ваш код
+        $store = $this->getStoreByKey($event);
+
+        if ($store) {
+            foreach ($store as $callback) {
+                call_user_func($callback, $data);
+            }
+        }
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool|mixed
+     */
+    protected function getStoreByKey(string $key)
+    {
+        $store = $this->getStore();
+        if (array_key_exists($key, $store)) {
+            return $store[$key];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $key
+     * @param string $value
+     *
+     * @return void
+     */
+    protected function setStoreByKey(string $key, $value)
+    {
+        $this->store[$key][] = $value;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getStore()
+    {
+        return $this->store;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    protected function setStore($value)
+    {
+        $this->store = $value;
     }
 }
