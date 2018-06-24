@@ -6,18 +6,17 @@
 class Emitter
 {
     /**
+     * Store for subscriptions
+     *
      * @var array
      */
-    protected $store = null;
+    protected $store = [];
 
     /**
      * Создает экземпляр класса Emitter.
      * @memberof Emitter
      */
-    public function constructor()
-    {
-        $this->setStore([]);
-    }
+    public function __construct() {}
 
     /**
      * связывает обработчик с событием
@@ -39,7 +38,7 @@ class Emitter
      *
      * @return void
      */
-    public function emit(string $event, $data)
+    public function emit(string $event, $data = null)
     {
         $store = $this->getStoreByKey($event);
 
@@ -48,6 +47,22 @@ class Emitter
                 call_user_func($callback, $data);
             }
         }
+    }
+
+    /**
+     * @param string $event
+     *
+     * @return void
+     */
+    public function unsubscribe(string $event)
+    {
+        $store = $this->getStore();
+
+        if (array_key_exists($event, $store)) {
+            unset($store[$event]);
+            $this->setStore($store);
+        }
+
     }
 
     /**
